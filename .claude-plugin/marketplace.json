@@ -1,0 +1,15 @@
+{
+  "name": "creator-os",
+  "description": "Creator OS: an open-source AI content team for creators, as Claude Code skills.",
+  "owner": {
+    "name": "Dara Obafemi",
+    "url": "https://github.com/fellyroy-cmd"
+  },
+  "plugins": [
+    {
+      "name": "creator-os",
+      "source": "./",
+      "description": "Your AI content team inside Claude Code: repurpose, ideas, news, weekly plan and short-form scripts in your own voice."
+    }
+  ]
+}

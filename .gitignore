@@ -1,0 +1,6 @@
+# your own content stays out of the repo when you test inside it
+creator/
+content/
+.env
+__pycache__/
+.DS_Store

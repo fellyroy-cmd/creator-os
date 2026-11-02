@@ -1,0 +1,13 @@
+{
+  "name": "creator-os",
+  "version": "0.1.0",
+  "description": "Your AI content team inside Claude Code: repurpose one video into every platform, find ideas, get a news digest, plan the week and write short-form scripts, all in your own voice.",
+  "author": {
+    "name": "Dara Obafemi",
+    "url": "https://github.com/fellyroy-cmd"
+  },
+  "homepage": "https://github.com/fellyroy-cmd/creator-os",
+  "repository": "https://github.com/fellyroy-cmd/creator-os",
+  "license": "MIT",
+  "keywords": ["content-creation", "creators", "youtube", "shorts", "repurpose", "social-media", "skills"]
+}
