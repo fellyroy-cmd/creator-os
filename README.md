@@ -76,7 +76,6 @@ Good first contributions:
 ## Who made this
 
 [Dara Obafemi](https://www.youtube.com/@dara_obafemi). I make videos about building with AI, and Creator OS is the
-system behind my channel, cleaned up so anyone can use it. Come say hi in
-[The AI Operator Discord](https://discord.gg/ybqAFz6ATR).
+system behind my channel, cleaned up so anyone can use it.
 
 MIT licensed.
