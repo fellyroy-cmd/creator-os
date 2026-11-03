@@ -24,6 +24,10 @@ Ask these in a single message so the creator answers in one go. Offer an example
 7. **Main call-to-action**: where you send people (newsletter, community, product, follow) + the link
 8. **Posting rhythm**: how many long videos and shorts per week, and which days
 9. **News sources** you trust for your niche (sites, newsletters, subreddits), optional
+10. **Breaking news watch**, optional: keywords that mean "this is big, tell me now" (e.g. "new iPhone",
+    "Fed rate decision", "[competitor] shuts down"), and where to ping you (Telegram, Discord, email, or
+    just in chat). Skip this if you don't want a watch running yet — `/creator-os:news-sniper` works
+    without it, it'll just ask each time instead of using a saved destination.
 
 If the creator says "just make something up" or skips questions, fill sensible defaults for their niche and
 mark them `(default, edit me)`.

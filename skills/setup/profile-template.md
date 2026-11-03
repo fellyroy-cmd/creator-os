@@ -40,5 +40,10 @@
 ## News sources (optional)
 -
 
+## Breaking news watch (optional)
+- **Watch for** (3–8 keywords/phrases that mean "drop everything and make this today"):
+- **Alert channel** (Telegram, Discord, email, or "just tell me in chat"):
+- **Alert destination** (bot token/chat id, webhook URL, or email — leave blank if none set up yet):
+
 ## Hashtags (optional)
 -

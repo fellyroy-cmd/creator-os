@@ -12,6 +12,7 @@ Free, open source, and running a real YouTube channel every day.
 /creator-os:plan-week      your content calendar, matched to how often you actually post
 /creator-os:repurpose      one video → X thread, LinkedIn, Instagram, short script, newsletter
 /creator-os:shorts-script  a 7-beat short script, 3 hook variants + a recording sheet
+/creator-os:news-sniper    check right now for breaking news worth a same-day post
 ```
 
 ## Install
@@ -44,6 +45,7 @@ content/research/         /news
 content/calendar/         /plan-week
 content/repurposed/       /repurpose
 content/shorts/           /shorts-script
+content/research/breaking/  /news-sniper
 ```
 
 The skills talk to each other through these files. `/ideas` and `/plan-week` pick up this week's `/news` digest
@@ -57,9 +59,11 @@ A typical week:
 ## What's coming
 
 - [ ] **Clip maker:** long video → captioned vertical shorts, on your own computer
-- [ ] **News sniper:** pings you on Telegram/Discord when big news breaks in your niche
 - [ ] **Sponsor desk:** sorts brand emails and drafts replies from your rate card
 - [ ] **Chat with your channel:** ask questions about everything you've ever said on video
+
+`/creator-os:news-sniper` checks for breaking news on demand today. Telegram/Discord pings on a schedule
+work too, with a little extra setup — see [`skills/news-sniper/references/scheduling.md`](skills/news-sniper/references/scheduling.md).
 
 Want one of these sooner, or have a better idea? [Open an issue](../../issues).
 
