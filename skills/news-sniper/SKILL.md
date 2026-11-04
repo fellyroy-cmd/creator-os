@@ -48,8 +48,9 @@ Don't invent urgency.
 ## Step 4: Alert (only if the creator asked to be pinged, not just checking in chat)
 If there's at least one 🔴 High story **and** the profile's "Alert channel" is set to something other than
 "just tell me in chat": follow [references/alert-channel.md](references/alert-channel.md) for how to send it.
-If the destination field is blank, tell the creator once: "Your alert channel is set to [channel] but I don't
-have a destination for it yet — add it to your profile, or I'll just report here in chat for now."
+If the secret for that channel isn't in `.env` yet, tell the creator once: "Your alert channel is set to [channel]
+but there's no [TELEGRAM_BOT_TOKEN / DISCORD_WEBHOOK_URL] in `.env` yet. Add it there (not in your profile), and
+I'll just report here in chat for now."
 
 ## Step 5: Save
 Append the report to `content/research/breaking/[YYYY-MM-DD].md` (create the file with a one-line header if

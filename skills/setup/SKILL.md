@@ -27,7 +27,10 @@ Ask these in a single message so the creator answers in one go. Offer an example
 10. **Breaking news watch**, optional: keywords that mean "this is big, tell me now" (e.g. "new iPhone",
     "Fed rate decision", "[competitor] shuts down"), and where to ping you (Telegram, Discord, email, or
     just in chat). Skip this if you don't want a watch running yet — `/creator-os:news-sniper` works
-    without it, it'll just ask each time instead of using a saved destination.
+    without it and just reports in chat.
+    **Never write a bot token, webhook URL or password into the profile.** If the creator pastes one, put it
+    in `.env` instead (see the news-sniper skill's alert-channel reference), make sure `.env` is in
+    `.gitignore`, and write only "yes" in the profile's "Alert set up?" field.
 
 If the creator says "just make something up" or skips questions, fill sensible defaults for their niche and
 mark them `(default, edit me)`.

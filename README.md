@@ -24,7 +24,14 @@ You need [Claude Code](https://claude.com/claude-code) (the terminal app, the de
 /plugin install creator-os@creator-os
 ```
 
-Then open a folder for your content (an empty one is fine) and run:
+If your chat window says `/plugin isn't available`, run the same thing from a terminal instead:
+
+```
+claude plugin marketplace add fellyroy-cmd/creator-os
+claude plugin install creator-os@creator-os
+```
+
+Then start a **new** session (plugins load when a session starts), open a folder for your content (an empty one is fine) and run:
 
 ```
 /creator-os:setup
