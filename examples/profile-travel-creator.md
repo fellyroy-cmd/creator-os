@@ -43,5 +43,10 @@
 - The Points Guy (flight deals)
 - Government travel advisory pages
 
+## Breaking news watch (optional)
+- **Watch for:** visa rule change, flight deal error fare, airline strike, travel advisory upgrade, border reopening
+- **Alert channel:** Discord
+- **Alert set up?** not yet. The webhook URL goes in `.env`, never in this file
+
 ## Hashtags (optional)
 - #budgettravel #southeastasia #backpacking

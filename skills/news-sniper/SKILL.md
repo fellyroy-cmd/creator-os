@@ -47,10 +47,12 @@ Don't invent urgency.
 
 ## Step 4: Alert (only if the creator asked to be pinged, not just checking in chat)
 If there's at least one 🔴 High story **and** the profile's "Alert channel" is set to something other than
-"just tell me in chat": follow [references/alert-channel.md](references/alert-channel.md) for how to send it.
-If the secret for that channel isn't in `.env` yet, tell the creator once: "Your alert channel is set to [channel]
-but there's no [TELEGRAM_BOT_TOKEN / DISCORD_WEBHOOK_URL] in `.env` yet. Add it there (not in your profile), and
-I'll just report here in chat for now."
+"just tell me in chat": run `scripts/send_alert.py` with the headline, one reason it's urgent, and the link
+as `--text` — see [references/alert-channel.md](references/alert-channel.md) for the exact command per
+channel. If it prints "Missing from .env: ...", tell the creator once, plainly: "Your alert channel is set to
+[channel] but there's no [TELEGRAM_BOT_TOKEN / DISCORD_WEBHOOK_URL] in `.env` yet. Add it there (not in your
+profile), and I'll just report here in chat for now." Not sure the destination is even right yet? Add
+`--dry-run` first — it shows exactly what would be sent without sending it.
 
 ## Step 5: Save
 Append the report to `content/research/breaking/[YYYY-MM-DD].md` (create the file with a one-line header if
