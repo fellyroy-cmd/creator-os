@@ -13,6 +13,7 @@ Free, open source, and running a real YouTube channel every day.
 /creator-os:repurpose      one video → X thread, LinkedIn, Instagram, short script, newsletter
 /creator-os:shorts-script  a 7-beat short script, 3 hook variants + a recording sheet
 /creator-os:news-sniper    check right now for breaking news worth a same-day post
+/creator-os:sponsor-desk   triage a brand email and draft a reply from your rate card — you still hit send
 ```
 
 ## Install
@@ -53,6 +54,7 @@ content/calendar/         /plan-week
 content/repurposed/       /repurpose
 content/shorts/           /shorts-script
 content/research/breaking/  /news-sniper
+content/sponsors/        /sponsor-desk
 ```
 
 The skills talk to each other through these files. `/ideas` and `/plan-week` pick up this week's `/news` digest
@@ -66,11 +68,15 @@ A typical week:
 ## What's coming
 
 - [ ] **Clip maker:** long video → captioned vertical shorts, on your own computer
-- [ ] **Sponsor desk:** sorts brand emails and drafts replies from your rate card
 - [ ] **Chat with your channel:** ask questions about everything you've ever said on video
 
 `/creator-os:news-sniper` checks for breaking news on demand today. Telegram/Discord pings on a schedule
 work too, with a little extra setup — see [`skills/news-sniper/references/scheduling.md`](skills/news-sniper/references/scheduling.md).
+
+`/creator-os:sponsor-desk` triages one pasted brand email against your own `creator/rate-card.md` and drafts
+a reply — it never reads your inbox and never sends anything, you copy the draft yourself. Copy
+[`skills/sponsor-desk/references/rate-card-template.md`](skills/sponsor-desk/references/rate-card-template.md)
+to `creator/rate-card.md` first.
 
 Want one of these sooner, or have a better idea? [Open an issue](../../issues).
 
