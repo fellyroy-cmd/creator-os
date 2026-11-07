@@ -58,6 +58,18 @@ collab, collaboration, advertise, ambassador) in the subject or body, newest fir
 Every match prints sender, subject, date and the plain-text body so the creator can read through them and
 say which one to run through sponsor-desk's Step 1 — this script never decides that for them.
 
+## How Claude actually calls this (you shouldn't need to run it by hand)
+
+Inside sponsor-desk's Step 1, Claude runs `python scripts/fetch_sponsor_emails.py --json` itself and turns
+the result into a numbered list right there in chat — you just say which number to triage. The plain-text
+commands above are for running it yourself in a terminal if you ever want to, but day to day there's no
+script to open: ask sponsor-desk to check your inbox and it does this step for you.
+
+`--json` prints the same matches as a JSON array instead of the readable block, each one tagged with a
+stable `id` (1, 2, 3, ...) so "triage #2" means the same email every time, and a clean `{"error": "..."}`
+shape on any failure (missing `.env`, bad app password, closed folder) so Claude can tell you plainly what
+went wrong instead of guessing from a sentence.
+
 **Only Gmail today.** The script talks IMAP, which most providers support, but it's only been written and
 tested against `imap.gmail.com`. A different provider (Outlook, Yahoo, a custom domain) would need its own
 IMAP host — that's a reasonable follow-up contribution, not something to guess at here.

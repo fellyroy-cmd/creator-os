@@ -19,14 +19,21 @@ Usage:
     python scripts/fetch_sponsor_emails.py --days 14 --limit 10
     python scripts/fetch_sponsor_emails.py --query "sponsor OR partnership OR collab"
     python scripts/fetch_sponsor_emails.py --dry-run
+    python scripts/fetch_sponsor_emails.py --json
 
 --dry-run connects, confirms the login works and the folder is reachable, then disconnects
 without searching or printing any real email content — safe to run as a first connection test.
+
+--json prints the same matches as a JSON array instead of the human-readable block, with a
+stable "id" (1, 2, 3, ...) on each one. This is what Claude reads when it runs this script as
+part of sponsor-desk Step 1 — the creator never touches a terminal, Claude shows the list in
+chat and the creator just says "run #2", no copy-pasting an email by hand.
 """
 import argparse
 import email
 import email.message
 import imaplib
+import json
 import os
 import sys
 from datetime import datetime, timedelta
@@ -133,13 +140,30 @@ def _imap_query(query: str, since: datetime) -> str:
     return f"{expr} SINCE {since_str}"
 
 
-def fetch(days: int, limit: int, query: str, folder: str, mark_read: bool, dry_run: bool) -> list[dict]:
+def _fail(message: str, as_json: bool) -> None:
+    """Exit with a clear reason, in whichever shape the caller asked for.
+
+    Claude running this with --json needs one consistent shape to check (a top-level "error" key)
+    instead of sometimes getting JSON and sometimes getting a plain sentence depending on which
+    failure path hit — that's what used to make a hand-run of this script feel necessary instead
+    of something Claude could just call and react to on its own.
+    """
+    if as_json:
+        print(json.dumps({"error": message}))
+    else:
+        print(message)
+    sys.exit(1)
+
+
+def fetch(days: int, limit: int, query: str, folder: str, mark_read: bool, dry_run: bool, as_json: bool = False) -> list[dict]:
     required = ["GMAIL_ADDRESS", "GMAIL_APP_PASSWORD"]
     missing = missing_vars(required)
     if missing:
-        print(f"Missing from .env: {', '.join(missing)}. Nothing fetched.")
-        print("See skills/sponsor-desk/references/gmail-connection.md for how to get an app password.")
-        sys.exit(1)
+        _fail(
+            f"Missing from .env: {', '.join(missing)}. Nothing fetched. "
+            "See skills/sponsor-desk/references/gmail-connection.md for how to get an app password.",
+            as_json,
+        )
 
     address = os.environ["GMAIL_ADDRESS"]
     app_password = os.environ["GMAIL_APP_PASSWORD"]
@@ -150,19 +174,21 @@ def fetch(days: int, limit: int, query: str, folder: str, mark_read: bool, dry_r
     try:
         imap.login(address, app_password)
     except imaplib.IMAP4.error as err:
-        raise SystemExit(
+        _fail(
             f"Gmail login failed: {err}. Check GMAIL_ADDRESS and GMAIL_APP_PASSWORD in .env — "
-            "most failures here mean the app password was mistyped or has been revoked."
+            "most failures here mean the app password was mistyped or has been revoked.",
+            as_json,
         )
 
     status, _ = imap.select(folder, readonly=not mark_read)
     if status != "OK":
         imap.logout()
-        raise SystemExit(f"Could not open folder '{folder}'. Check the name (Gmail labels are case-sensitive).")
+        _fail(f"Could not open folder '{folder}'. Check the name (Gmail labels are case-sensitive).", as_json)
 
     if dry_run:
         imap.logout()
-        print(f"[dry run] Logged in as {address}, opened '{folder}' read-only. Connection works. Nothing searched.")
+        if not as_json:
+            print(f"[dry run] Logged in as {address}, opened '{folder}' read-only. Connection works. Nothing searched.")
         return []
 
     since = datetime.now() - timedelta(days=days)
@@ -170,7 +196,7 @@ def fetch(days: int, limit: int, query: str, folder: str, mark_read: bool, dry_r
     status, data = imap.search(None, search_str)
     if status != "OK":
         imap.logout()
-        raise SystemExit("IMAP search failed — try a simpler --query.")
+        _fail("IMAP search failed — try a simpler --query.", as_json)
 
     ids = data[0].split()
     ids = ids[-limit:] if limit else ids  # newest N (IMAP returns ids in ascending order)
@@ -210,13 +236,27 @@ def main() -> None:
         "fetching normally does NOT change anything on the server)",
     )
     parser.add_argument("--dry-run", action="store_true", help="test the login and folder only, fetch nothing")
+    parser.add_argument(
+        "--json",
+        action="store_true",
+        help="print matches as a JSON array with a stable numeric id instead of the human-readable "
+        "block — this is how Claude reads the results to show a numbered pick-list in chat",
+    )
     args = parser.parse_args()
 
     load_env()
-    results = fetch(args.days, args.limit, args.query, args.folder, args.mark_read, args.dry_run)
+    results = fetch(args.days, args.limit, args.query, args.folder, args.mark_read, args.dry_run, args.json)
 
     if args.dry_run:
+        if args.json:
+            print(json.dumps({"dry_run": True, "connected": True}))
         return
+
+    if args.json:
+        numbered = [{"id": i, **msg} for i, msg in enumerate(results, 1)]
+        print(json.dumps(numbered, indent=2))
+        return
+
     if not results:
         print(f"No emails matched in the last {args.days} day(s) of '{args.folder}'.")
         return

@@ -20,10 +20,15 @@ aren't yours." and stop.
 ## Step 1: Get the email
 Ask the creator to paste the brand's email (or forward the text) if they haven't already.
 
-**Tired of pasting?** If `.env` has `GMAIL_ADDRESS` and `GMAIL_APP_PASSWORD` set, offer to pull candidates
-from their real inbox instead: run `python scripts/fetch_sponsor_emails.py` (add `--days` to widen the
-window if nothing recent comes back) and show the creator the list so they pick which one to triage — never
-pick for them. No `.env` secrets set yet? Point them at
+**Tired of pasting?** If `.env` has `GMAIL_ADDRESS` and `GMAIL_APP_PASSWORD` set, run
+`python scripts/fetch_sponsor_emails.py --json` yourself, right here in this step — don't ask the creator to
+open a terminal, that's the whole point of this option. Add `--days` to widen the window if nothing recent
+comes back. The `--json` output is a numbered array (`id`, `from`, `subject`, `date`, `body`); turn it into a
+short numbered list in chat (subject + sender + how recent) and ask which one to triage by number — never
+pick for them. An `{"error": "..."}` result (missing `.env`, bad app password, etc.) means something's wrong
+with the connection, not that there's nothing to show — read the message and relay it plainly. An empty `[]`
+genuinely means no matches in that window; say so and offer to widen `--days` or fall back to pasting.
+No `.env` secrets set yet? Point the creator at
 [references/gmail-connection.md](references/gmail-connection.md) once, then fall back to pasting for this
 run. This connection is **read-only** — it cannot send, label, or delete anything, see the reference for why
 that's guaranteed and not just a promise.
