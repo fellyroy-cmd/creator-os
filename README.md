@@ -73,9 +73,11 @@ A typical week:
 `/creator-os:news-sniper` checks for breaking news on demand today. Telegram/Discord pings on a schedule
 work too, with a little extra setup — see [`skills/news-sniper/references/scheduling.md`](skills/news-sniper/references/scheduling.md).
 
-`/creator-os:sponsor-desk` triages one pasted brand email against your own `creator/rate-card.md` and drafts
-a reply — it never reads your inbox and never sends anything, you copy the draft yourself. Copy
-[`skills/sponsor-desk/references/rate-card-template.md`](skills/sponsor-desk/references/rate-card-template.md)
+`/creator-os:sponsor-desk` triages a brand email against your own `creator/rate-card.md` and drafts a reply —
+it never sends anything, you copy the draft yourself. Paste the email in, or connect Gmail read-only so it
+can suggest candidates from your real inbox (optional, see
+[`skills/sponsor-desk/references/gmail-connection.md`](skills/sponsor-desk/references/gmail-connection.md)).
+Copy [`skills/sponsor-desk/references/rate-card-template.md`](skills/sponsor-desk/references/rate-card-template.md)
 to `creator/rate-card.md` first.
 
 Want one of these sooner, or have a better idea? [Open an issue](../../issues).

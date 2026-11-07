@@ -1,12 +1,13 @@
 ---
 name: sponsor-desk
-description: Read a brand/sponsorship email the creator pastes in, decide what package and price fits from their rate card, and draft a reply (or a polite decline) for the creator to review and send themselves — never sends anything on its own. Triggers on "draft a reply to this sponsor", "is this a good deal", "sponsor email", "/creator-os:sponsor-desk".
+description: Read a brand/sponsorship email (pasted in, or fetched read-only from Gmail), decide what package and price fits from their rate card, and draft a reply (or a polite decline) for the creator to review and send themselves — never sends anything on its own. Triggers on "draft a reply to this sponsor", "is this a good deal", "sponsor email", "check my inbox for sponsors", "/creator-os:sponsor-desk".
 ---
 
 # Sponsor desk: triage a brand email, draft the reply, never send it
 
-This skill never sends email, never touches an inbox and never agrees to a price on the creator's behalf.
-It reads one pasted email, tells the creator plainly what's going on, and drafts a reply **for the creator to
+This skill never sends email and never agrees to a price on the creator's behalf. It can optionally **read**
+the creator's own inbox (never write to it — no sending, labeling or deleting) to find candidate emails
+instead of the creator pasting them by hand, see Step 1. Either way it drafts a reply **for the creator to
 read, edit and send themselves.** That line doesn't move as this skill grows.
 
 ## Step 0: Load the creator
@@ -17,7 +18,17 @@ Then read `creator/rate-card.md`. If it doesn't exist, tell the creator: "I need
 aren't yours." and stop.
 
 ## Step 1: Get the email
-Ask the creator to paste the brand's email (or forward the text) if they haven't already. Pull out:
+Ask the creator to paste the brand's email (or forward the text) if they haven't already.
+
+**Tired of pasting?** If `.env` has `GMAIL_ADDRESS` and `GMAIL_APP_PASSWORD` set, offer to pull candidates
+from their real inbox instead: run `python scripts/fetch_sponsor_emails.py` (add `--days` to widen the
+window if nothing recent comes back) and show the creator the list so they pick which one to triage — never
+pick for them. No `.env` secrets set yet? Point them at
+[references/gmail-connection.md](references/gmail-connection.md) once, then fall back to pasting for this
+run. This connection is **read-only** — it cannot send, label, or delete anything, see the reference for why
+that's guaranteed and not just a promise.
+
+Either way, pull out from the chosen email:
 - Brand name and what they're selling
 - What they're asking for (a short? a video segment? a newsletter mention? something not on the rate card?)
 - Any price, timeline or exclusivity terms they've already proposed
