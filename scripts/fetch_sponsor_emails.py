@@ -8,11 +8,29 @@ so the creator can paste one into sponsor-desk's Step 1.
 This script never sends anything, never deletes anything, and never modifies a flag or label
 unless --mark-read is passed explicitly (off by default — see --mark-read below).
 
-Needs in .env (never in creator/profile.md or creator/rate-card.md — see
-skills/sponsor-desk/references/gmail-connection.md for how to get these):
+Works with Gmail, Outlook/Office365, Yahoo, or any other IMAP inbox.
+
+Gmail — unchanged, exactly as before (never need to touch anything else in .env):
 
     GMAIL_ADDRESS=you@gmail.com
     GMAIL_APP_PASSWORD=...          # a 16-character Google "app password", not your real password
+
+Outlook/Office365 or Yahoo — set EMAIL_PROVIDER plus the generic address/password pair:
+
+    EMAIL_PROVIDER=outlook          # or "yahoo" (see PROVIDERS below for the full list)
+    EMAIL_ADDRESS=you@outlook.com
+    EMAIL_APP_PASSWORD=...          # an app password from that provider, same idea as Gmail's
+
+A custom domain (e.g. Google Workspace or a provider not in PROVIDERS) — set the host yourself:
+
+    EMAIL_PROVIDER=custom
+    EMAIL_ADDRESS=you@yourdomain.com
+    EMAIL_APP_PASSWORD=...
+    IMAP_HOST=imap.yourdomain.com
+    IMAP_PORT=993                   # optional, this is already the default
+
+See skills/sponsor-desk/references/gmail-connection.md for where each provider's app password setting
+lives. Secrets stay in .env, never in creator/profile.md or creator/rate-card.md.
 
 Usage:
     python scripts/fetch_sponsor_emails.py
@@ -41,10 +59,17 @@ from email.header import decode_header
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-IMAP_HOST = "imap.gmail.com"
-IMAP_PORT = 993
 DEFAULT_QUERY = "sponsor OR sponsorship OR partnership OR collab OR collaboration OR advertise OR ambassador"
 MAX_BODY_CHARS = 3000
+
+# Host/port for the providers creators ask about most. Add a row here (and in
+# skills/sponsor-desk/references/gmail-connection.md) before telling someone to use --provider custom —
+# IMAP_HOST is only a fallback for inboxes that genuinely aren't on this list.
+PROVIDERS = {
+    "gmail": ("imap.gmail.com", 993),
+    "outlook": ("outlook.office365.com", 993),
+    "yahoo": ("imap.mail.yahoo.com", 993),
+}
 
 
 def load_env(path: Path = ROOT / ".env") -> None:
@@ -68,6 +93,38 @@ def load_env(path: Path = ROOT / ".env") -> None:
 
 def missing_vars(names: list[str]) -> list[str]:
     return [name for name in names if not os.environ.get(name, "").strip()]
+
+
+def resolve_connection() -> tuple[str, str, str, int] | tuple[None, None, None, None]:
+    """Work out (address, app_password, host, port) from .env, or (None, None, None, None) if unset.
+
+    Gmail stays exactly as it was before this function existed: GMAIL_ADDRESS + GMAIL_APP_PASSWORD,
+    always imap.gmail.com:993, no EMAIL_PROVIDER needed. That path is checked first and returns
+    immediately, so nothing about an existing Gmail setup changes.
+
+    Everyone else sets EMAIL_PROVIDER (outlook, yahoo, or custom) plus EMAIL_ADDRESS/EMAIL_APP_PASSWORD.
+    "custom" (or any provider name not in PROVIDERS) requires IMAP_HOST too, since there's no sensible
+    default host to guess at for an arbitrary domain. IMAP_PORT defaults to 993 (IMAP-over-SSL, what
+    every provider in PROVIDERS uses) unless overridden.
+    """
+    if os.environ.get("GMAIL_ADDRESS", "").strip() and os.environ.get("GMAIL_APP_PASSWORD", "").strip():
+        host, port = PROVIDERS["gmail"]
+        return os.environ["GMAIL_ADDRESS"], os.environ["GMAIL_APP_PASSWORD"], host, port
+
+    address = os.environ.get("EMAIL_ADDRESS", "").strip()
+    app_password = os.environ.get("EMAIL_APP_PASSWORD", "").strip()
+    if not address or not app_password:
+        return None, None, None, None
+
+    provider = os.environ.get("EMAIL_PROVIDER", "").strip().lower()
+    if provider in PROVIDERS:
+        host, port = PROVIDERS[provider]
+    else:
+        host = os.environ.get("IMAP_HOST", "").strip()
+        if not host:
+            return None, None, None, None
+        port = int(os.environ.get("IMAP_PORT", "993"))
+    return address, app_password, host, port
 
 
 def _decode(raw) -> str:
@@ -156,34 +213,31 @@ def _fail(message: str, as_json: bool) -> None:
 
 
 def fetch(days: int, limit: int, query: str, folder: str, mark_read: bool, dry_run: bool, as_json: bool = False) -> list[dict]:
-    required = ["GMAIL_ADDRESS", "GMAIL_APP_PASSWORD"]
-    missing = missing_vars(required)
-    if missing:
+    address, app_password, host, port = resolve_connection()
+    if address is None:
         _fail(
-            f"Missing from .env: {', '.join(missing)}. Nothing fetched. "
-            "See skills/sponsor-desk/references/gmail-connection.md for how to get an app password.",
+            "Missing from .env: set GMAIL_ADDRESS + GMAIL_APP_PASSWORD for Gmail, or EMAIL_PROVIDER "
+            "(outlook/yahoo/custom) + EMAIL_ADDRESS + EMAIL_APP_PASSWORD (+ IMAP_HOST for custom) for "
+            "another inbox. Nothing fetched. See skills/sponsor-desk/references/gmail-connection.md.",
             as_json,
         )
 
-    address = os.environ["GMAIL_ADDRESS"]
-    app_password = os.environ["GMAIL_APP_PASSWORD"]
-
     # readonly=True: the server rejects any attempt to change flags, move, or delete over this
     # connection. That's enforced by imaplib/the server, not just a promise in this script.
-    imap = imaplib.IMAP4_SSL(IMAP_HOST, IMAP_PORT)
+    imap = imaplib.IMAP4_SSL(host, port)
     try:
         imap.login(address, app_password)
     except imaplib.IMAP4.error as err:
         _fail(
-            f"Gmail login failed: {err}. Check GMAIL_ADDRESS and GMAIL_APP_PASSWORD in .env — "
-            "most failures here mean the app password was mistyped or has been revoked.",
+            f"Login failed for {host}: {err}. Check the address and app password in .env — most failures "
+            "here mean the app password was mistyped, revoked, or the wrong provider's host got used.",
             as_json,
         )
 
     status, _ = imap.select(folder, readonly=not mark_read)
     if status != "OK":
         imap.logout()
-        _fail(f"Could not open folder '{folder}'. Check the name (Gmail labels are case-sensitive).", as_json)
+        _fail(f"Could not open folder '{folder}'. Check the name (folder/label names are case-sensitive).", as_json)
 
     if dry_run:
         imap.logout()

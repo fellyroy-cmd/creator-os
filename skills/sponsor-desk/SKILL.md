@@ -20,7 +20,9 @@ aren't yours." and stop.
 ## Step 1: Get the email
 Ask the creator to paste the brand's email (or forward the text) if they haven't already.
 
-**Tired of pasting?** If `.env` has `GMAIL_ADDRESS` and `GMAIL_APP_PASSWORD` set, run
+**Tired of pasting?** If `.env` has either `GMAIL_ADDRESS` + `GMAIL_APP_PASSWORD` (Gmail) or
+`EMAIL_ADDRESS` + `EMAIL_APP_PASSWORD` + `EMAIL_PROVIDER` (Outlook, Yahoo, or a custom domain — see
+[references/gmail-connection.md](references/gmail-connection.md)) set, run
 `python scripts/fetch_sponsor_emails.py --json` yourself, right here in this step — don't ask the creator to
 open a terminal, that's the whole point of this option. Add `--days` to widen the window if nothing recent
 comes back. The `--json` output is a numbered array (`id`, `from`, `subject`, `date`, `body`); turn it into a

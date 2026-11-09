@@ -74,8 +74,9 @@ A typical week:
 work too, with a little extra setup — see [`skills/news-sniper/references/scheduling.md`](skills/news-sniper/references/scheduling.md).
 
 `/creator-os:sponsor-desk` triages a brand email against your own `creator/rate-card.md` and drafts a reply —
-it never sends anything, you copy the draft yourself. Paste the email in, or connect Gmail read-only so it
-can suggest candidates from your real inbox (optional, see
+it never sends anything, you copy the draft yourself. Paste the email in, or connect your inbox read-only
+(Gmail, Outlook/Office365, Yahoo, or a custom domain) so it can suggest candidates from your real inbox
+(optional, see
 [`skills/sponsor-desk/references/gmail-connection.md`](skills/sponsor-desk/references/gmail-connection.md)).
 Copy [`skills/sponsor-desk/references/rate-card-template.md`](skills/sponsor-desk/references/rate-card-template.md)
 to `creator/rate-card.md` first.
