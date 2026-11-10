@@ -14,6 +14,7 @@ Free, open source, and running a real YouTube channel every day.
 /creator-os:shorts-script  a 7-beat short script, 3 hook variants + a recording sheet
 /creator-os:news-sniper    check right now for breaking news worth a same-day post
 /creator-os:sponsor-desk   triage a brand email and draft a reply from your rate card — you still hit send
+/creator-os:chat-with-channel   ask what you've actually said on camera, answered from your own transcripts
 ```
 
 ## Install
@@ -55,6 +56,7 @@ content/repurposed/       /repurpose
 content/shorts/           /shorts-script
 content/research/breaking/  /news-sniper
 content/sponsors/        /sponsor-desk
+content/transcripts/      /chat-with-channel (your transcripts + index.jsonl — never committed)
 ```
 
 The skills talk to each other through these files. `/ideas` and `/plan-week` pick up this week's `/news` digest
@@ -68,7 +70,6 @@ A typical week:
 ## What's coming
 
 - [ ] **Clip maker:** long video → captioned vertical shorts, on your own computer
-- [ ] **Chat with your channel:** ask questions about everything you've ever said on video
 
 `/creator-os:news-sniper` checks for breaking news on demand today. Telegram/Discord pings on a schedule
 work too, with a little extra setup — see [`skills/news-sniper/references/scheduling.md`](skills/news-sniper/references/scheduling.md).
@@ -80,6 +81,12 @@ it never sends anything, you copy the draft yourself. Paste the email in, or con
 [`skills/sponsor-desk/references/gmail-connection.md`](skills/sponsor-desk/references/gmail-connection.md)).
 Copy [`skills/sponsor-desk/references/rate-card-template.md`](skills/sponsor-desk/references/rate-card-template.md)
 to `creator/rate-card.md` first.
+
+`/creator-os:chat-with-channel` answers questions using only what's in your own video transcripts — drop
+`.txt`/`.vtt`/`.srt` files into `content/transcripts/`, run `python scripts/ingest_transcripts.py`, then ask.
+Keyword search today; see
+[`skills/chat-with-channel/references/ingest-setup.md`](skills/chat-with-channel/references/ingest-setup.md)
+for setup and what's planned next (meaning-based search).
 
 Want one of these sooner, or have a better idea? [Open an issue](../../issues).
 
