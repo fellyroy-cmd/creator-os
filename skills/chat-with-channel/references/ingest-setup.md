@@ -39,12 +39,16 @@ you'd recognise, ideally with the date first so files sort chronologically.
 python scripts/ingest_transcripts.py
 ```
 
-This reads every `.txt`/`.vtt`/`.srt` file in `content/transcripts/`, splits each one into ~220-word passages
+This reads every `.txt`/`.md`/`.vtt`/`.srt` file in `content/transcripts/`, splits each one into ~220-word passages
 (about 90 seconds of talking) with a little overlap between them, and writes `content/transcripts/index.jsonl`
 — one line per passage. Re-run it any time you add or change a transcript; it rewrites the whole file, it
 doesn't append.
 
 Want to check what it would do first, without writing anything? `python scripts/ingest_transcripts.py --dry-run`
+
+Want to know if the index is out of date right now, without rebuilding it? `python scripts/ingest_transcripts.py --check`
+— it compares file timestamps only (fast), and `/creator-os:chat-with-channel` runs this itself before answering
+a question so you'll get a heads-up if something needs re-indexing.
 
 ## 4. Ask something
 

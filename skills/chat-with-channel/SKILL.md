@@ -12,14 +12,16 @@ says so — it never fills the gap with a generic AI answer dressed up as someth
 Read `creator/profile.md`. If it doesn't exist, tell the creator to run `/creator-os:setup` first and stop.
 
 Then check `content/transcripts/index.jsonl`. If it doesn't exist:
-"You haven't indexed any transcripts yet. Drop a transcript file (.txt, .vtt or .srt) for each video into
+"You haven't indexed any transcripts yet. Drop a transcript file (.txt, .md, .vtt or .srt) for each video into
 `content/transcripts/`, then run `python scripts/ingest_transcripts.py`. See
 [references/ingest-setup.md](references/ingest-setup.md) for where to get transcripts from YouTube. Come back
 here once that's done." Stop — don't answer from general knowledge instead.
 
-If the index exists but is older than every file in `content/transcripts/` (a newer transcript was added
-since the last ingest), mention that once: "Heads up, you've added transcripts since the last index — run
-`python scripts/ingest_transcripts.py` again to include them." Then continue with what's indexed so far.
+If it exists, run `python scripts/ingest_transcripts.py --check` to see if it's current — this only compares
+file timestamps, it doesn't re-read or re-chunk anything, so it's quick. If it reports stale (a transcript
+was added, edited or removed since the last ingest), mention that once: "Heads up, [whatever the check output
+said] — run `python scripts/ingest_transcripts.py` again to include the latest." Then continue with what's
+indexed so far; don't block the question on it.
 
 ## Step 1: Find the passages that actually answer the question
 Read `content/transcripts/index.jsonl` (one JSON object per line: `id`, `source`, `chunk`, `timestamp`,
@@ -55,5 +57,7 @@ with this answer as the source material.
 
 ## Keeping the index current
 Run `python scripts/ingest_transcripts.py` again any time a new transcript is added — it's not automatic yet
-(no watcher, no schedule). See [references/ingest-setup.md](references/ingest-setup.md) for the full setup,
-including where this is headed next (semantic search instead of keyword match).
+(no watcher, no schedule), but `python scripts/ingest_transcripts.py --check` gives a real, fast answer to
+"is it stale right now?" without rebuilding, which is what Step 0 uses. See
+[references/ingest-setup.md](references/ingest-setup.md) for the full setup, including where this is headed
+next (semantic search instead of keyword match).

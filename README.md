@@ -83,7 +83,7 @@ Copy [`skills/sponsor-desk/references/rate-card-template.md`](skills/sponsor-des
 to `creator/rate-card.md` first.
 
 `/creator-os:chat-with-channel` answers questions using only what's in your own video transcripts — drop
-`.txt`/`.vtt`/`.srt` files into `content/transcripts/`, run `python scripts/ingest_transcripts.py`, then ask.
+`.txt`/`.md`/`.vtt`/`.srt` files into `content/transcripts/`, run `python scripts/ingest_transcripts.py`, then ask.
 Keyword search today; see
 [`skills/chat-with-channel/references/ingest-setup.md`](skills/chat-with-channel/references/ingest-setup.md)
 for setup and what's planned next (meaning-based search).
