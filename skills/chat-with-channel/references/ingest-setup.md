@@ -50,6 +50,10 @@ Want to know if the index is out of date right now, without rebuilding it? `pyth
 — it compares file timestamps only (fast), and `/creator-os:chat-with-channel` runs this itself before answering
 a question so you'll get a heads-up if something needs re-indexing.
 
+Want the index to rebuild itself on a timer instead of running the command by hand? See
+[references/scheduling.md](scheduling.md) for a Task Scheduler (Windows) / cron (Mac/Linux) setup — entirely
+optional, the `--check` above already covers most creators without it.
+
 ## 4. Ask something
 
 Run `/creator-os:chat-with-channel` and ask a real question — "what's my take on AI replacing editors?",

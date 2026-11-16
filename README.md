@@ -84,7 +84,9 @@ to `creator/rate-card.md` first.
 
 `/creator-os:chat-with-channel` answers questions using only what's in your own video transcripts — drop
 `.txt`/`.md`/`.vtt`/`.srt` files into `content/transcripts/`, run `python scripts/ingest_transcripts.py`, then ask.
-Keyword search today; see
+It checks the index for staleness automatically before every answer; see
+[`skills/chat-with-channel/references/scheduling.md`](skills/chat-with-channel/references/scheduling.md) if you'd
+rather it rebuild on a timer instead. Keyword search today; see
 [`skills/chat-with-channel/references/ingest-setup.md`](skills/chat-with-channel/references/ingest-setup.md)
 for setup and what's planned next (meaning-based search).
 

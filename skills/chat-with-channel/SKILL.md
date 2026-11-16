@@ -56,8 +56,9 @@ me to turn this into a short or a post?" and hand off to `/creator-os:repurpose`
 with this answer as the source material.
 
 ## Keeping the index current
-Run `python scripts/ingest_transcripts.py` again any time a new transcript is added — it's not automatic yet
-(no watcher, no schedule), but `python scripts/ingest_transcripts.py --check` gives a real, fast answer to
-"is it stale right now?" without rebuilding, which is what Step 0 uses. See
+Run `python scripts/ingest_transcripts.py` again any time a new transcript is added. Step 0 already checks
+staleness automatically before every question, so you'll never get a silently-stale answer — but if you'd
+rather the index rebuild itself on a timer instead of waiting for you to notice, see
+[references/scheduling.md](references/scheduling.md) for a Task Scheduler / cron setup. See
 [references/ingest-setup.md](references/ingest-setup.md) for the full setup, including where this is headed
 next (semantic search instead of keyword match).
