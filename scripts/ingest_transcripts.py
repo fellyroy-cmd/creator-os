@@ -118,8 +118,11 @@ def check_staleness() -> tuple[bool, str]:
     Returns (is_stale, message). "Stale" covers three cases: the index doesn't exist yet, a
     transcript file is newer than the index (edited or added since the last ingest run), or a
     transcript that's listed in the index no longer exists on disk (deleted since last ingest).
-    This only reads file metadata (mtimes) and the index's "source" fields — it never opens or
-    re-chunks a transcript, so it's cheap enough to run before every question.
+    This only reads file metadata (mtimes) and the index's "source"/"text" fields — it never
+    opens or re-chunks a transcript itself, so it's cheap enough to run before every question.
+    When the index is current, the message also includes a rough word count (summed straight
+    from the already-written passage text) purely as an at-a-glance size indicator — it has no
+    effect on the is_stale result.
     """
     files = find_transcript_files()
 
@@ -132,16 +135,22 @@ def check_staleness() -> tuple[bool, str]:
     newer = [p.name for p in files if p.stat().st_mtime > index_mtime]
 
     indexed_sources = set()
+    total_words = 0
     with INDEX_PATH.open("r", encoding="utf-8") as handle:
         for line in handle:
             line = line.strip()
             if line:
-                indexed_sources.add(json.loads(line)["source"])
+                passage = json.loads(line)
+                indexed_sources.add(passage["source"])
+                total_words += len(passage["text"].split())
     current_sources = {p.stem for p in files}
     removed = sorted(indexed_sources - current_sources)
 
     if not newer and not removed:
-        return False, f"Index is current: {len(files)} file(s), matches content/transcripts/."
+        return False, (
+            f"Index is current: {len(files)} file(s), ~{total_words} words, "
+            f"matches content/transcripts/."
+        )
 
     parts = []
     if newer:
