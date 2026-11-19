@@ -168,6 +168,9 @@ def build_index(words_per_chunk: int, overlap_words: int) -> list[dict]:
         source = path.stem
         text, timestamp = load_transcript(path)
         words = text.split()
+        if not words:
+            print(f"Warning: {path.name} has no text to index (empty file?) — skipping.")
+            continue
         for chunk_number, chunk in enumerate(chunk_words(words, words_per_chunk, overlap_words), start=1):
             passages.append({
                 "id": f"{source}#{chunk_number}",
