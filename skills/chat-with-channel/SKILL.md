@@ -24,13 +24,18 @@ said] — run `python scripts/ingest_transcripts.py` again to include the latest
 indexed so far; don't block the question on it.
 
 ## Step 1: Find the passages that actually answer the question
-Read `content/transcripts/index.jsonl` (one JSON object per line: `id`, `source`, `chunk`, `timestamp`,
-`text`). Search it the same way you'd search any document: look for passages whose `text` contains the
-question's key terms, synonyms included (a question about "pricing" should also match "cost", "charge",
-"how much" in the transcript). Rank by how directly a passage addresses the question, not just keyword count.
+Run `python scripts/search_transcripts.py "<the creator's question>" --json` and read the result — it
+scores every indexed passage by how many of the question's meaningful words it contains (ignoring words
+like "the", "what", "my") and returns the top matches, best first. This replaces reading the raw index
+yourself: the ranking is a real, testable function instead of an eyeballed guess, and it's the seam where a
+future embeddings upgrade slots in without changing this step.
 
-Keep the top 3–6 passages. If nothing matches at all, say so plainly in Step 2 rather than stretching a
-loosely-related passage into an answer.
+If the question uses different words than the transcript likely does (e.g. "what did you stop using" when
+the creator probably said "I switched tools"), also try the obvious synonym as a second search — keyword
+matching only finds what's actually written.
+
+Keep the top 3–6 results the script returns. If it reports no matches at all, say so plainly in Step 2
+rather than stretching a loosely-related passage into an answer.
 
 ## Step 2: Answer from the passages, cited
 Write the answer using only what the passages say. Shape:

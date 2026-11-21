@@ -60,6 +60,15 @@ Run `/creator-os:chat-with-channel` and ask a real question — "what's my take 
 "did I ever do a video on pricing a first sponsorship?" It answers from the indexed passages only, with the
 source video and (if the file had timestamps) roughly where to find it.
 
+Behind the scenes, the skill calls `python scripts/search_transcripts.py "<your question>"` to find the
+matching passages — you can also run this yourself straight from the terminal if you just want to see the
+raw matches:
+
+```
+python scripts/search_transcripts.py "what's my take on pricing a first sponsorship"
+python scripts/search_transcripts.py "ai editing tools" --top 3
+```
+
 ## Privacy
 
 `content/transcripts/` and its `index.jsonl` stay out of the repo (`content/` is already in `.gitignore` from
