@@ -34,6 +34,20 @@ Claude how to do one creator job well.
 
 After editing a skill, run `/plugin` to update or reinstall it so Claude picks up the change.
 
+## Add or change a script
+
+Scripts (the `.py` files under `scripts/`) back a skill with real, testable logic instead of asking Claude
+to eyeball an answer — see `search_transcripts.py` for an example. If you add or change one:
+
+- **Pure logic functions** (no file I/O, no `argparse`) get a `scripts/test_<name>.py` using only
+  `unittest` from the standard library — no new dependency. See `scripts/test_search_transcripts.py` for
+  the pattern: small fixed inputs built right in the test, one behaviour per test method.
+- Run it directly: `python scripts/test_<name>.py`
+- Add it as its own step in `.github/workflows/validate.yml` so a regression fails CI, not a future
+  session's manual check.
+- Keep hand-testing with real throwaway data too (delete it before committing) — automated tests catch
+  regressions in logic you already trust; they don't replace actually running the script once.
+
 ## Improve an existing skill
 
 Open an issue first if it changes how the skill works, so we can agree on it before you write it.
