@@ -14,3 +14,4 @@ jobs:
           python-version: "3.12"
       - run: python scripts/validate.py
       - run: python scripts/test_search_transcripts.py
+      - run: python scripts/test_ingest_transcripts.py
