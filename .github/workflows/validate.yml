@@ -15,3 +15,4 @@ jobs:
       - run: python scripts/validate.py
       - run: python scripts/test_search_transcripts.py
       - run: python scripts/test_ingest_transcripts.py
+      - run: python scripts/test_send_alert.py
