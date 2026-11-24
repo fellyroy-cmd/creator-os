@@ -1,9 +1,11 @@
 # Setting up chat with your channel
 
-This feature is in its first, simplest version: it searches your transcripts for matching words. No paid
-API, no account, nothing leaves your computer. A smarter version (meaning-based search, so it finds the right
-clip even when the wording's different) is planned — see "What's next" below — but the file format won't
-change, so transcripts you index now still work once that ships.
+This feature searches your transcripts for matching words, weighted by how distinctive each word is across
+your own indexed videos — a word you rarely say (like "sponsorship") counts for a lot more than a word you say
+in nearly every video (like "content" or "honestly"). No paid API, no account, nothing leaves your computer. A
+smarter version still (meaning-based search, so it finds the right clip even when the wording's completely
+different) is planned — see "What's next" below — but the file format won't change, so transcripts you index
+now still work once that ships.
 
 ## 1. Get a transcript for each video
 
@@ -77,9 +79,12 @@ search in Step 1 of the skill runs by reading the file directly; nothing is uplo
 
 ## What's next
 
-Keyword matching works well once you have a few dozen videos indexed, but it can miss a passage that answers
-a question using different words than the question itself (e.g. the transcript says "I switched tools" and
-the question asks "what did you stop using"). A future version can swap the matching step for an embeddings
+Weighted keyword matching (TF-IDF: common words count for less, rare ones count for more) is a real step up
+from plain word-counting, but it's still matching words, not meaning — it can miss a passage that answers a
+question using different words than the question itself (e.g. the transcript says "I switched tools" and the
+question asks "what did you stop using"). A future version can swap the matching step for a true embeddings
 search (turning each passage into a vector and comparing meaning, not just words) without changing
 `index.jsonl`'s format — that's a deliberate seam left in this version so it's a drop-in upgrade, not a
-rewrite.
+rewrite. That upgrade needs a real dependency decision first (a local embedding model adds install weight
+this project doesn't have yet — see `CONTRIBUTING.md`'s "no paid APIs required" rule), so it's being done
+deliberately, not rushed in.

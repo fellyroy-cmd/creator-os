@@ -26,9 +26,10 @@ indexed so far; don't block the question on it.
 ## Step 1: Find the passages that actually answer the question
 Run `python scripts/search_transcripts.py "<the creator's question>" --json` and read the result — it
 scores every indexed passage by how many of the question's meaningful words it contains (ignoring words
-like "the", "what", "my") and returns the top matches, best first. This replaces reading the raw index
-yourself: the ranking is a real, testable function instead of an eyeballed guess, and it's the seam where a
-future embeddings upgrade slots in without changing this step.
+like "the", "what", "my"), weighted so a word the creator rarely says counts for more than one they say in
+nearly every video, and returns the top matches, best first. This replaces reading the raw index yourself:
+the ranking is a real, testable function instead of an eyeballed guess, and it's the seam where a future
+embeddings upgrade slots in without changing this step.
 
 If the question uses different words than the transcript likely does (e.g. "what did you stop using" when
 the creator probably said "I switched tools"), also try the obvious synonym as a second search — keyword
