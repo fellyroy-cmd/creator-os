@@ -167,6 +167,14 @@ def main():
     parser.add_argument("--json", action="store_true", help="print raw JSON instead of a readable list")
     args = parser.parse_args()
 
+    if args.top <= 0:
+        # Without this check, --top 0 (or a negative number) silently returns an empty result
+        # list, which prints the exact same "No passages matched" message as a genuine no-match
+        # case — misleading the creator into thinking a topic isn't covered when it actually is,
+        # and --top is just set to return nothing. A clear, immediate error beats a confusing
+        # false negative.
+        parser.error(f"--top must be a positive number (got {args.top}).")
+
     if not INDEX_PATH.exists():
         print(f"No index found at {INDEX_PATH.relative_to(ROOT)}. Run "
               f"scripts/ingest_transcripts.py first to build one from your transcripts.")
