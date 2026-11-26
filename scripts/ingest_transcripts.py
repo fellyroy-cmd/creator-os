@@ -194,6 +194,20 @@ def main():
                          help="report whether the index is stale, without reading or writing transcripts")
     args = parser.parse_args()
 
+    if args.words_per_chunk <= 0:
+        # Without this check, chunk_words() silently builds broken passages instead of failing:
+        # --words-per-chunk 0 writes every passage with empty "text" (looks successful, the
+        # index is quietly useless), and a negative value produces a mix of oversized and empty
+        # chunks. Either way the script still prints "Wrote N passage(s)" as if nothing were
+        # wrong — a clear, immediate error beats a corrupted index.jsonl discovered later.
+        parser.error(f"--words-per-chunk must be a positive number (got {args.words_per_chunk}).")
+
+    if args.overlap_words < 0:
+        # chunk_words() already clamps the step size to at least 1 word (so a too-large overlap
+        # can't cause an infinite loop), but a negative overlap doesn't mean anything — there's
+        # no such thing as "removing" words between chunks — so it's rejected the same way.
+        parser.error(f"--overlap-words cannot be negative (got {args.overlap_words}).")
+
     if not TRANSCRIPTS_DIR.exists():
         print(f"No {TRANSCRIPTS_DIR.relative_to(ROOT)} folder yet. Create it and add your transcripts "
               f"(.txt, .md, .vtt or .srt) — see skills/chat-with-channel/references/ingest-setup.md.")
