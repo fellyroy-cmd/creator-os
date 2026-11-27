@@ -175,6 +175,21 @@ def main():
         # false negative.
         parser.error(f"--top must be a positive number (got {args.top}).")
 
+    if not keywords(args.query):
+        # A query made entirely of stopwords ("what did I say about this") or an empty string
+        # tokenizes to zero keywords, so every passage scores 0.0 and search() returns nothing —
+        # printing the exact same "No passages matched... might not be covered" message as a
+        # genuine no-match. That's misleading in the opposite direction from a real no-match: the
+        # problem isn't that the topic is missing from the index, it's that the question didn't
+        # contain any word specific enough to search on at all. Same bug shape as --top and
+        # --words-per-chunk before it — a technically-valid input that silently produces a
+        # meaningless result instead of a clear error.
+        parser.error(
+            f"\"{args.query}\" has no specific words to search on (only common words like "
+            f"\"what\"/\"did\"/\"about\", or nothing at all). Try asking with at least one "
+            f"specific word, e.g. \"what's my take on pricing\" instead of \"what did I say\"."
+        )
+
     if not INDEX_PATH.exists():
         print(f"No index found at {INDEX_PATH.relative_to(ROOT)}. Run "
               f"scripts/ingest_transcripts.py first to build one from your transcripts.")
